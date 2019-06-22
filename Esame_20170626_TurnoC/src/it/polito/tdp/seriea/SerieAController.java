@@ -6,8 +6,11 @@ package it.polito.tdp.seriea;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.seriea.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
@@ -21,7 +24,7 @@ public class SerieAController {
     private URL location;
 
     @FXML // fx:id="boxNumeroDiGoal"
-    private ChoiceBox<?> boxNumeroDiGoal; // Value injected by FXMLLoader
+    private ChoiceBox<Integer> boxNumeroDiGoal; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxSquadra1"
     private ChoiceBox<?> boxSquadra1; // Value injected by FXMLLoader
@@ -41,13 +44,22 @@ public class SerieAController {
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
 
+	private Model model;
+
     @FXML
     void doAnalizzaRisultati(ActionEvent event) {
-
+    	txtResult.setText(model.creaGrafo());
+    	boxNumeroDiGoal.getItems().addAll(model.getVertici()); 
     }
 
     @FXML
     void doCalcolaConnessioniGoal(ActionEvent event) {
+    	Integer numGoalCasa = boxNumeroDiGoal.getValue();
+    	if(numGoalCasa!=null) {
+    		txtResult.setText(model.getRisultati(numGoalCasa));
+    	}else {
+    		showMessage("Errore: Seleziona un numero dal menù a tendina");
+    	}
 
     }
 
@@ -67,4 +79,14 @@ public class SerieAController {
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'SerieA.fxml'.";
 
     }
+
+	public void setModel(Model model) {
+		this.model = model;
+	}
+	
+	private void showMessage(String message) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setContentText(message);
+		alert.show();
+	}
 }
